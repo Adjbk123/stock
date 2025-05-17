@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une nouvelle Categorie{% endblock %}
+{% block breadcrumb %}Categorie{% endblock %}
+{% block bouton%}
+    <a class="btn btn-primary text-white" href="{{ path('app_categorie_index') }}">Retour</a>
+{% endblock%}
+{% block body %}
+
+    {{ include('categorie/_form.html.twig') }}
+
+   {# <a href="{{ path('app_categorie_index') }}">Retour à la liste</a> #}
+
+{% endblock %}

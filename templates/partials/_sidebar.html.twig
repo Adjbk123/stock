@@ -1,0 +1,95 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{path('app_admin')}}">
+              <i class="mdi mdi-grid-large menu-icon"></i>
+              <span class="menu-title">Tableau de bord</span>
+            </a>
+          </li>
+          <li class="nav-item nav-category">Boutique</li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <i class="menu-icon mdi mdi-store"></i>
+              <span class="menu-title">Articles</span>
+              <i class="menu-arrow"></i> 
+            </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{path('app_produit_new')}}">Ajouter</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{path('app_produit_index')}}">Liste</a></li>
+              </ul>
+            </div>
+          </li>
+           <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#uia-basic" aria-expanded="false" aria-controls="uia-basic">
+              <i class="menu-icon mdi mdi-cart-arrow-down"></i>
+              <span class="menu-title">Approvisionnements</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="uia-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_approvisionnement_new')}}">Ajouter</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_approvisionnement_index')}}">Liste des Appros</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#uiat-basic" aria-expanded="false" aria-controls="uiat-basic">
+              <i class="menu-icon mdi mdi-cart-arrow-up"></i>
+              <span class="menu-title">Ventes</span>
+              <i class="menu-arrow"></i> 
+            </a>
+            <div class="collapse" id="uiat-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_vente_index') }}">Liste des ventes</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item nav-category">Paramètre</li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+              <i class="menu-icon mdi mdi-card-text-outline"></i>
+              <span class="menu-title">Catégories</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="form-elements">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"><a class="nav-link" href="{{path('app_categorie_new')}} ">Ajouter</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{path('app_categorie_index')}}">Liste des catégories</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+              <i class="menu-icon mdi mdi-account-group"></i>
+              <span class="menu-title">Clients</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="charts">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_client_index') }}">Liste des clients</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item nav-category">Administration</li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#pass" aria-expanded="false" aria-controls="pass">
+              <i class="menu-icon mdi mdi-account-group"></i>
+              <span class="menu-title">Comptes utilisateurs</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="pass">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_inscription') }}">Ajouter</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_utilisateur_index') }}">Liste des comptes</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{path('app_logout')}}">
+              <i class="menu-icon mdi mdi-power"></i>
+              <span class="menu-title">Déconnexion</span>
+            </a>
+          </li>
+        </ul>
+      </nav>

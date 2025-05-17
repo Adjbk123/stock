@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des catégories {% endblock %}
+{% block breadcrumb%}Categorie {% endblock %}
+{% block bouton%}
+    <a class="btn btn-primary text-white" href="{{ path('app_categorie_new') }}">Créer un nouveau</a>
+{% endblock%}
+{% block body %}
+
+
+
+    <div class="table-responsive">
+        <table id="myTable" class="table table-hover">
+            <thead>
+            <tr>
+                <th>Intitule</th>
+                <th>Nombre de produit</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for categorie in categories %}
+                <tr>
+
+                    <td>{{ categorie.intitule }}</td>
+                    <td>{{ categorie.produits.count }}</td>
+                    <td>
+                        <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" class="btn btn-success p-1">Voir</a>
+                        <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}"  class="btn btn-primary p-1">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

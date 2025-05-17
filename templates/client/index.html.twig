@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste{% endblock %}
+{% block breadcrumb %}Clients{% endblock %}
+
+
+{% block body %}
+
+    <div class="table-responsive">
+        <table class="table table-hover" id="myTable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>NomsClient</th>
+                <th>Téléphone</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for client in clients %}
+                <tr>
+                    <td>{{ client.id }}</td>
+                    <td>{{ client.nomsClient }}</td>
+                    <td>{{ client.telephone }}</td>
+
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

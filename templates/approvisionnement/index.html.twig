@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listes des Approvisionnements {% endblock %}
+
+{% block bouton%}
+    <a class="btn btn-primary text-white" href="{{ path('app_approvisionnement_new') }}">Ajouter</a>
+{%endblock%}
+
+{% block breadcrumb %}
+    Approvisionnements
+{%endblock%}
+
+{% block body %}
+    <div class="table-responsive">
+        <table id="myTable" class="table table-hover">
+            <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Montant Total</th>
+                <th>DateAppro</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for approvisionnement in approvisionnements %}
+                <tr>
+                    <td>{{ approvisionnement.produit.nomProduit }}</td>
+                    <td>{{ approvisionnement.quantite }}</td>
+
+                    <td>{{ approvisionnement.coutUnit }}</td>
+                    <td>{{ approvisionnement.dateAppro ? approvisionnement.dateAppro|date('Y-m-d ') : '' }}</td>
+                    <td>
+                        <a class="btn btn-success p-1" href="{{ path('app_approvisionnement_show', {'id': approvisionnement.id}) }}">Voir</a>
+                        <a class="btn btn-primary p-1" href="{{ path('app_approvisionnement_edit', {'id': approvisionnement.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+
+{% endblock %}

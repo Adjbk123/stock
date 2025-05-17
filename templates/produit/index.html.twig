@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Produits {% endblock %}
+
+{% block bouton%}
+    <a class="btn btn-primary text-white" href="{{ path('app_produit_new') }}">Ajouter</a>
+{% endblock %}
+{% block breadcrumb%}
+      Liste des produits
+{% endblock %}
+{% block body %}
+
+
+
+    <div class="table-responsive" >
+        <table class="table table-hover" id="myTable">
+            <thead>
+            <tr>
+
+                <th>Nom Produit</th>
+                <th>Prix</th>
+                <th>Quantité Stock</th>
+                <th>Date Ajout</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for produit in produits %}
+                <tr>
+                    <td>{{ produit.nomProduit }}</td>
+                    <td>{{ produit.prix }}</td>
+                    <td>{{ produit.quantiteStock }}</td>
+                    <td>{{ produit.dateAjout ? produit.dateAjout|date('Y-m-d') : '' }}</td>
+                    <td>
+                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-success p-2">Voir</a>
+                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-primary p-2">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Aucun enregistrement trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

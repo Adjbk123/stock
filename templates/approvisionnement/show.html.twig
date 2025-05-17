@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails{% endblock %}
+ {% block bouton%}
+     <a class="btn btn-primary text-white" href="{{ path('app_approvisionnement_index') }}">Retour</a>
+{%endblock%}
+  {% block breadcrumb %}
+      Approvisionnements
+  {%endblock%}
+{% block body %}
+<div class="card mt-3">
+    <div class="card-body">
+        <table class="table table-hover">
+            <tbody>
+            <tr>
+                <th>Quantité</th>
+                <td>{{ approvisionnement.quantite }}</td>
+            </tr>
+            <tr>
+                <th>Date d'Approvisionnement</th>
+                <td>{{ approvisionnement.dateAppro ? approvisionnement.dateAppro|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Montant Total</th>
+                <td>{{ approvisionnement.coutUnit }}</td>
+            </tr>
+            </tbody>
+        </table>
+        {{ include('approvisionnement/_delete_form.html.twig') }}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produit{% endblock %}
+ {% block bouton%}
+     <a class="btn btn-primary text-white" href="{{ path('app_produit_index') }}">Retour</a>
+{% endblock%}
+ {% block breadcrumb%}
+    Voir un produit
+ {% endblock%}
+{% block body %}
+
+        <table class="table table-hover">
+            <tbody>
+            <tr>
+                <th>NomProduit</th>
+                <td>{{ produit.nomProduit }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ produit.prix }}</td>
+            </tr>
+            <tr>
+                <th>Quantité en Stock</th>
+                <td>{{ produit.quantiteStock }}</td>
+            </tr>
+            <tr>
+                <th>DateAjout</th>
+                <td>{{ produit.dateAjout ? produit.dateAjout|date('Y-m-d') : '' }}</td>
+            </tr>
+            </tbody>
+        </table>
+        {{ include('produit/_delete_form.html.twig') }}
+
+
+{% endblock %}

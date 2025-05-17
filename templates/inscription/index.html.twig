@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout d'un compte utilisateur {% endblock %}
+
+{% block breadcrumb %}Utilisateurs {% endblock %}
+
+{% block bouton %} <a class="btn btn-primary text-white" href="{{ path('app_admin') }}"> Retour</a> {% endblock %}
+
+{% block body %}
+
+    {{form(form)}}
+
+
+
+{% endblock %}

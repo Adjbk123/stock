@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categorie{% endblock %}
+{% block breadcrumb%}Voir une  catégorie {% endblock %}
+{% block bouton%}
+    <a class="btn btn-primary text-white" href="{{ path('app_categorie_index') }}">Retour</a>
+{% endblock%}
+{% block body %}
+
+          <table class="table">
+              <tbody>
+              <tr>
+                  <th>Intitule</th>
+                  <td>{{ categorie.intitule }}</td>
+              </tr>
+              </tbody>
+          </table>
+
+    {% if categorie.produits is not empty %}
+        {{ include('categorie/_delete_form.html.twig') }}
+    {% endif %}
+
+
+
+
+{% endblock %}

@@ -1,0 +1,176 @@
+{#{% extends 'base.html.twig' %}#}
+
+{#{% block title %}New Vente{% endblock %}#}
+
+{#{% block body %}#}
+{#    <h1>Create new Vente</h1>#}
+
+{#    {{ include('vente/_form.html.twig') }}#}
+
+{#    <a href="{{ path('app_vente_index') }}">back to list</a>#}
+{#{% endblock %}#}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <form id="venteForm" method="post" action="{{ path('app_enregistrement_vente') }}">
+            <h1>Nouvelle Vente</h1>
+
+            {% if app.flashes('error') is not empty %}
+                <div class="alert alert-danger">
+                    {% for message in app.flashes('error') %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Informations du Client</h2>
+
+                    <div class="form-group">
+                        <label for="nomClient">Nom du Client</label>
+                        <input type="text" class="form-control" id="nomClient" name="nomClient" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">Téléphone</label>
+                        <input type="text" class="form-control" id="telephone" name="telephone" required>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <h2>Produits à Vendre</h2>
+                    <div class="form-group">
+                        {% for produit in produits %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="produits[]" class="produit-checkbox" value="{{ produit.id }}" data-nom-produit="{{ produit.nomProduit }}" data-prix-unitaire="{{ produit.prix }}" data-quantite-stock="{{ produit.quantiteStock }}"> {{ produit.nomProduit }} - {{ produit.prix }}
+                                </label>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Produits Sélectionnés</h2>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Prix Unitaire</th>
+                            <th>Quantité</th>
+                            <th>Coût</th>
+                        </tr>
+                        </thead>
+                        <tbody id="selectedProductsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Montant Total: <span id="montantTotal">0</span></h3>
+                    <input type="hidden" name="montantTotal" value="0" id="montantTotalInput">
+                </div>
+            </div>
+            <div id="selectedProductsInputs"></div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">Valider la Vente</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var selectedProducts = {};
+
+            // Gérer la sélection des produits
+            $(document).on('change', '.produit-checkbox', function() {
+                var produitId = $(this).val();
+                var produitNom = $(this).data('nom-produit');
+                var produitPrixUnitaire = parseFloat($(this).data('prix-unitaire'));
+                var produitQuantiteStock = parseInt($(this).data('quantite-stock'));
+                var quantiteInput = $('#quantite-' + produitId);
+
+                if ($(this).is(':checked')) {
+                    if (produitQuantiteStock === 0) {
+                        alert('Impossible de sélectionner le produit "' + produitNom + '". Le stock est épuisé.');
+                        $(this).prop('checked', false);
+                        return;
+                    }
+
+                    quantiteInput.prop('disabled', false);
+                    quantiteInput.attr('max', produitQuantiteStock);
+                    selectedProducts[produitId] = {
+                        nom: produitNom,
+                        prixUnitaire: produitPrixUnitaire,
+                        quantite: 0,
+                        quantiteStock: produitQuantiteStock
+                    };
+
+
+
+                    //
+                    var newRow = '<tr id="produit-' + produitId + '">' +
+                        '<td>' + produitNom + '</td>' +
+                        '<td>' + produitPrixUnitaire + '</td>' +
+                        '<td><input type="number" class="form-control quantite-input" id="quantite-' + produitId + '" data-produit-id="' + produitId + '" min="0" max="' + produitQuantiteStock + '"></td>' +
+                        '<td>0</td>' +
+                        '</tr>';
+
+                    $('#selectedProductsTable').append(newRow);
+                } else {
+                    quantiteInput.prop('disabled', true);
+                    quantiteInput.val(0);
+                    delete selectedProducts[produitId];
+                    $('#produit-' + produitId).remove();
+                }
+
+
+            });
+
+            // Gérer les changements de quantité des produits sélectionnés
+            $(document).on('change', '.quantite-input', function() {
+                var produitId = $(this).data('produit-id');
+                var quantite = parseInt($(this).val());
+
+                if (quantite === 0) {
+                    alert('La quantité pour le produit "' + selectedProducts[produitId].nom + '" ne peut pas être nulle.');
+                    $(this).val(selectedProducts[produitId].quantite);
+                    return;
+                }
+
+                if (quantite > selectedProducts[produitId].quantiteStock) {
+                    alert('La quantité pour le produit "' + selectedProducts[produitId].nom + '" dépasse la quantité en stock.');
+                    $(this).val(selectedProducts[produitId].quantite);
+                    return;
+                }
+
+                selectedProducts[produitId].quantite = quantite;
+                var cout = quantite * selectedProducts[produitId].prixUnitaire;
+                $('#produit-' + produitId + ' td:eq(3)').text(cout.toFixed(2));
+
+                var montantTotal = 0;
+                $('.quantite-input').each(function() {
+                    var prodId = $(this).data('produit-id');
+                    montantTotal += selectedProducts[prodId].quantite * selectedProducts[prodId].prixUnitaire;
+                });
+
+                $('#montantTotal').text(montantTotal.toFixed(2));
+                $('#montantTotalInput').val(montantTotal.toFixed(2));
+            });
+
+
+        });
+    </script>
+
+
+
+
+{% endblock %}

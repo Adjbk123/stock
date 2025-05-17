@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listes des ventes{% endblock %}
+{% block breadcrumb%} Ventes {% endblock %}
+{% block bouton%}
+    <a class="btn btn-primary text-white" href="{{ path('app_vente_new') }}">Effectuer une vente</a>
+{% endblock%}
+{% block body %}
+ <div class="table-responsive">
+     <table class="table table-hover" id="myTable">
+         <thead>
+         <tr>
+             <th>Client</th>
+             <th>Montant Total</th>
+             <th>Date Vente</th>
+             <th>Actions</th>
+         </tr>
+         </thead>
+         <tbody>
+         {% for vente in ventes %}
+             <tr>
+
+                 <td>{{ vente.client.nomsClient }}</td>
+                 <td>{{ vente.montantTotal }}</td>
+                 <td>{{ vente.dateVente ? vente.dateVente|date('Y-m-d ') : '' }}</td>
+                 <td>
+                     <a href="{{ path('app_vente_show', {'id': vente.id}) }}" class="btn btn-success p-1">Détails</a>
+
+                 </td>
+             </tr>
+         {% else %}
+             <tr>
+                 <td colspan="4">no records found</td>
+             </tr>
+         {% endfor %}
+         </tbody>
+     </table>
+ </div>
+
+
+{% endblock %}

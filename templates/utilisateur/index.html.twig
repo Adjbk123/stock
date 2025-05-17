@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+{% block breadcrumb %}Utilisateurs{% endblock %}
+{% block bouton %}
+
+    <a href="{{ path('app_inscription') }}" class="btn btn-primary text-white"> Ajout d'un compte</a>
+{% endblock %}
+
+{% block body %}
+    <div class="table-responsive">
+        <table class="table table-hover" id="myTable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adresse</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <td>{{ utilisateur.id }}</td>
+                    <td>{{ utilisateur.username }}</td>
+                    <td>{{ utilisateur.nom }}</td>
+                    <td>{{ utilisateur.prenom }}</td>
+                    <td>{{ utilisateur.adresse }}</td>
+                    <td>
+                        <a class="btn btn-success p-2" href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">Voir</a>
+                        <a  class="btn btn-primary p-2" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}
