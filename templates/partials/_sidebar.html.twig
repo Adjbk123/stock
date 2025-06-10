@@ -20,19 +20,9 @@
               </ul>
             </div>
           </li>
-           <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#uia-basic" aria-expanded="false" aria-controls="uia-basic">
-              <i class="menu-icon mdi mdi-cart-arrow-down"></i>
-              <span class="menu-title">Approvisionnements</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="uia-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{{ path('app_approvisionnement_new')}}">Ajouter</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{ path('app_approvisionnement_index')}}">Liste des Appros</a></li>
-              </ul>
-            </div>
-          </li>
+
+
+
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#uiat-basic" aria-expanded="false" aria-controls="uiat-basic">
               <i class="menu-icon mdi mdi-cart-arrow-up"></i>
@@ -41,10 +31,26 @@
             </a>
             <div class="collapse" id="uiat-basic">
               <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ path('app_vente_new') }}">Nouvelle Vente</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ path('app_vente_index') }}">Liste des ventes</a></li>
               </ul>
             </div>
           </li>
+          {% if is_granted('ROLE_RESPONSABLE') %}
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#uia-basic" aria-expanded="false" aria-controls="uia-basic">
+                <i class="menu-icon mdi mdi-cart-arrow-down"></i>
+                <span class="menu-title">Approvisionnements</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="uia-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_approvisionnement_new')}}">Ajouter</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_approvisionnement_index')}}">Liste des Appros</a></li>
+                </ul>
+              </div>
+            </li>
+          {% endif %}
           <li class="nav-item nav-category">Paramètre</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
@@ -85,6 +91,8 @@
               </ul>
             </div>
           </li>
+          <li class="nav-item nav-category">Mon compte</li>
+
           <li class="nav-item">
             <a class="nav-link" href="{{path('app_logout')}}">
               <i class="menu-icon mdi mdi-power"></i>

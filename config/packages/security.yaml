@@ -29,6 +29,9 @@ security:
             # switch_user: true
 
     # Easy way to control access for large sections of your site
+    role_hierarchy:
+        ROLE_RESPONSABLE: ROLE_USER
+        ROLE_TENANCIER: ROLE_USER
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: /login, roles: PUBLIC_ACCESS }

@@ -28824,7 +28824,7 @@ div.tagsinput span.tag a {
 }
 
 .auth .brand-logo img {
-  width: 90px;
+  width: 100px;
 }
 
 .auth form .form-group {
@@ -29043,7 +29043,7 @@ div.tagsinput span.tag a {
   background: #fff;
   position: relative;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .sidebar .nav .nav-item.active > .nav-link i,
@@ -29053,7 +29053,7 @@ div.tagsinput span.tag a {
 }
 
 .sidebar .nav .nav-item.active > .nav-link .menu-title {
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .sidebar .nav .nav-item.active > .nav-link i.menu-arrow::before {

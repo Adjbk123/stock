@@ -36,7 +36,7 @@ class VenteController extends AbstractController
     }
 
     //
-    #[Route('/new', name: 'app_vente_new')]
+    #[Route('/nouveau', name: 'app_vente_new')]
     public function indexForm( ProduitRepository $produitRepository): Response
 
     {

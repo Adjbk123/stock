@@ -22,7 +22,7 @@ class ApprovisionnementController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_approvisionnement_new', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'app_approvisionnement_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         ApprovisionnementRepository $approvisionnementRepository,

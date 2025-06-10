@@ -24,11 +24,14 @@ class InscriptionController extends AbstractController
             
             $data = $form->getData();
             $password = $passwordHasher->hashPassword($data, $data->getPassword());
-            $utilisateur->setPassword($password);	
-    
+            $utilisateur->setPassword($password);
+            // Récupérer les rôles depuis le formulaire
+            $roles = $form->get('role')->getData(); // c'est un array
+            $utilisateur->setRoles([$roles]);
+
             $manager->persist($utilisateur);
             $manager->flush();
-            return $this->redirectToRoute('app_inscription');
+            return $this->redirectToRoute('app_utilisateur_index');
         }
         return $this->render('inscription/index.html.twig', [
                'form'=> $form
