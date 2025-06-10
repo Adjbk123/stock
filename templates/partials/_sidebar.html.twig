@@ -77,6 +77,9 @@
               </ul>
             </div>
           </li>
+          {% if is_granted('ROLE_RESPONSABLE') %}
+
+
           <li class="nav-item nav-category">Administration</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pass" aria-expanded="false" aria-controls="pass">
@@ -91,6 +94,7 @@
               </ul>
             </div>
           </li>
+          {% endif %}
           <li class="nav-item nav-category">Mon compte</li>
 
           <li class="nav-item">
