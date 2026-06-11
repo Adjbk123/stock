@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Produit;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -32,6 +33,10 @@ class ProduitType extends AbstractType
 //                'label'=>'Date'
 //            ])
 
+            ->add('quantiteStock', IntegerType::class, [
+                'label' => 'Quantité en stock',
+                'attr' => ['class' => 'form-control mb-3', 'min' => 0],
+            ])
             ->add('categorie', EntityType::class, [
                 'class'=>'App\Entity\Categorie',
                 'label'=>'Catégorie',

@@ -22,9 +22,11 @@ class UtilisateurType extends AbstractType
                     'Responsable' => 'ROLE_RESPONSABLE',
                     'Tenancier' => 'ROLE_TENANCIER',
                 ],
-                'expanded' => false, // true si tu veux des boutons radio
-                'multiple' => false, // true si tu veux permettre plusieurs rôles
+                'expanded' => false,
+                'multiple' => false,
                 'required' => true,
+                'mapped' => false,
+                'data' => $options['current_role'],
             ]);
     }
 
@@ -32,6 +34,7 @@ class UtilisateurType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
+            'current_role' => null,
         ]);
     }
 }

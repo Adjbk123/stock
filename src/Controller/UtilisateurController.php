@@ -51,10 +51,15 @@ class UtilisateurController extends AbstractController
     #[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
     {
-        $form = $this->createForm(UtilisateurType::class, $utilisateur);
+        $currentRole = in_array('ROLE_RESPONSABLE', $utilisateur->getRoles()) ? 'ROLE_RESPONSABLE' : 'ROLE_TENANCIER';
+        $form = $this->createForm(UtilisateurType::class, $utilisateur, [
+            'current_role' => $currentRole,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $role = $form->get('roles')->getData();
+            $utilisateur->setRoles([$role]);
             $utilisateurRepository->save($utilisateur, true);
 
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
@@ -70,6 +75,10 @@ class UtilisateurController extends AbstractController
     public function delete(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$utilisateur->getId(), $request->request->get('_token'))) {
+            if ($utilisateur->getVentes()->count() > 0) {
+                $this->addFlash('danger', 'Impossible de supprimer cet utilisateur car il a des ventes enregistrées.');
+                return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            }
             $utilisateurRepository->remove($utilisateur, true);
         }
 

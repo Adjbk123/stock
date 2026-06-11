@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/produit')]
 class ProduitController extends AbstractController
@@ -30,7 +31,6 @@ class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $produit->setQuantiteStock(0);
             $dateAjout = new DateTimeImmutable();
             $produit->setDateAjout($dateAjout);
 
@@ -71,6 +71,7 @@ class ProduitController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_RESPONSABLE')]
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, ProduitRepository $produitRepository): Response
     {

@@ -30,7 +30,11 @@
                     <td>{{ utilisateur.adresse }}</td>
                     <td>
                         <a class="btn btn-success p-2" href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">Voir</a>
-                        <a  class="btn btn-primary p-2" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
+                        <a class="btn btn-primary p-2" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
+                        <form method="post" action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+                            <button class="btn btn-danger p-2">Supprimer</button>
+                        </form>
                     </td>
                 </tr>
             {% else %}
