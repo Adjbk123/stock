@@ -1,199 +1,287 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Nouvelle vente{% endblock %}
+{% block breadcrumb %}Nouvelle vente{% endblock %}
 {% block bouton %}
-    <a class="btn btn-primary text-white" href="{{ path('app_vente_index') }}">Retour</a>
-{% endblock %}
-
-{% block breadcrumb %}
-    Vente
+    <a href="{{ path('app_vente_index') }}" class="btn btn-outline-secondary btn-sm">Retour</a>
 {% endblock %}
 
 {% block body %}
-    <form method="post" action="{{ path('app_vente_processvente') }}">
-        <!-- Formulaire de saisie client et numéro -->
-        <div class="card-title">
-            Informations relatives au <span class="bg-success badge">client</span>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="form-label" for="client">Noms et prénoms</label>
-                <input class="form-control" type="text" id="client" name="client" required>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="form-label" for="numero">Numéro de téléphone :</label>
-                <input class="form-control" type="text" id="numero" name="numero" required>
-                <input type="hidden" id="venteValider" name="venteValider" required>
-            </div>
-        </div>
-        <hr>
-        <!-- Tableau des produits disponibles -->
-        <div class="card-title">
-            Listes des produits <span class="bg-success badge">disponibles</span>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered" id="table-produits">
-                <thead class="table-secondary">
-                <tr>
-                    <th>Produit</th>
-                    <th>Prix</th>
-                    <th>Stock Restant</th>
-                    <th>Sélectionner</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for produit in produits %}
-                    <tr class="produit-ligne" data-produit-id="{{ produit.id }}" data-produit-stock="{{ produit.quantiteStock }}" data-produit-nom="{{ produit.nomProduit }}" data-produit-prix="{{ produit.prix }}">
-                        <td>{{ produit.nomProduit }}</td>
-                        <td>{{ produit.prix }}</td>
-                        <td>{{ produit.quantiteStock }}</td>
-                        <td>
-                            <input type="checkbox" class="produit-checkbox" data-produit-stock="{{ produit.quantiteStock }}" data-produit-nom="{{ produit.nomProduit }}" data-produit-prix="{{ produit.prix }}" data-produit-id="{{ produit.id }}">
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr>
-        <div class="card-title mt-3 mb-3">
-            Listes des produits <span class="bg-success badge">sélectionnés</span>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered" id="table-produits-selectionnes">
-                <thead class="table-primary">
-                <tr>
-                    <th>Produit</th>
-                    <th>Prix</th>
-                    <th>Quantité</th>
-                    <th>Coût</th>
-                </tr>
-                </thead>
-                <tbody id="produitSelectioner"></tbody>
-            </table>
-        </div>
-        <hr>
-        <div class="card-title d-flex justify-content-end">Montant total : <span id="montant_total">0</span> F</div>
-        <button type="submit" class="btn btn-primary" id="envoyer">Valider la vente</button>
-    </form>
-    <!-- /.modal-content -->
-    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title mt-0">Notification</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<form method="post" action="{{ path('app_vente_processvente') }}" id="form-vente">
+<input type="hidden" id="venteValider" name="venteValider">
+
+<div class="row g-4">
+
+    {# ── Colonne gauche : client + produits ── #}
+    <div class="col-lg-7">
+
+        {# Client #}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="fw-semibold mb-3" style="color:#3b5bdb;">
+                    <i class="mdi mdi-account-outline me-2"></i>Informations client
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" style="font-size:.85rem;">Nom et prénom</label>
+                        <input class="form-control" type="text" name="client" id="client"
+                               placeholder="Ex : Jean Dupont" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" style="font-size:.85rem;">Téléphone</label>
+                        <input class="form-control" type="text" name="numero" id="numero"
+                               placeholder="Ex : 97000000" required>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p class="messageStock"></p>
+            </div>
+        </div>
+
+        {# Produits disponibles #}
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0" style="color:#3b5bdb;">
+                        <i class="mdi mdi-store me-2"></i>Produits disponibles
+                    </h6>
+                    <input type="text" id="recherche-produit" class="form-control form-control-sm w-auto"
+                           placeholder="Rechercher..." style="min-width:180px;">
                 </div>
+                <div class="table-responsive" style="max-height:380px;overflow-y:auto;">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background:#f8f9fa;position:sticky;top:0;">
+                            <tr>
+                                <th style="font-size:.78rem;">Produit</th>
+                                <th style="font-size:.78rem;">Prix</th>
+                                <th style="font-size:.78rem;">Stock</th>
+                                <th style="font-size:.78rem;">Ajouter</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-produits">
+                        {% for produit in produits %}
+                            <tr class="produit-row"
+                                data-id="{{ produit.id }}"
+                                data-nom="{{ produit.nomProduit }}"
+                                data-prix="{{ produit.prix }}"
+                                data-stock="{{ produit.quantiteStock }}">
+                                <td class="fw-medium">{{ produit.nomProduit }}</td>
+                                <td>{{ produit.prix|number_format(0,',',' ') }} FCFA</td>
+                                <td>
+                                    {% if produit.quantiteStock > 0 %}
+                                        <span class="badge bg-success-subtle text-success">{{ produit.quantiteStock }}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger">Rupture</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if produit.quantiteStock > 0 %}
+                                        <button type="button" class="btn btn-sm btn-outline-primary btn-ajouter"
+                                                data-id="{{ produit.id }}">
+                                            <i class="mdi mdi-plus"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                                            <i class="mdi mdi-minus"></i>
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {# ── Colonne droite : panier ── #}
+    <div class="col-lg-5">
+        <div class="card" style="position:sticky;top:80px;">
+            <div class="card-body">
+                <h6 class="fw-semibold mb-3" style="color:#3b5bdb;">
+                    <i class="mdi mdi-cart-outline me-2"></i>Panier
+                    <span id="nb-articles" class="badge rounded-pill ms-1" style="background:#e7edff;color:#3b5bdb;font-size:.7rem;">0</span>
+                </h6>
+
+                <div id="panier-vide" class="text-center text-muted py-4" style="font-size:.88rem;">
+                    <i class="mdi mdi-cart-off" style="font-size:2.5rem;display:block;margin-bottom:8px;opacity:.4;"></i>
+                    Aucun produit sélectionné
+                </div>
+
+                <table class="table align-middle mb-0" id="table-panier" style="display:none;">
+                    <thead style="background:#f8f9fa;">
+                        <tr>
+                            <th style="font-size:.75rem;">Produit</th>
+                            <th style="font-size:.75rem;width:90px;">Qté</th>
+                            <th style="font-size:.75rem;">Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-panier"></tbody>
+                </table>
+
+                <hr class="my-3">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-semibold" style="font-size:.9rem;">Montant total</span>
+                    <span id="montant-total" class="fw-bold" style="font-size:1.15rem;color:#3b5bdb;">0 FCFA</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" id="btn-valider" disabled>
+                    <i class="mdi mdi-check-circle-outline me-1"></i> Valider la vente
+                </button>
             </div>
         </div>
     </div>
-{% endblock %}
 
-{% block stylesheets %}
-    <style>
-        .table {
-            margin-bottom: 20px;
-        }
-        .produit-ligne {
-            cursor: pointer;
-        }
-        .produit-ligne:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
+</div>
+</form>
+
+{# Modal stock insuffisant #}
+<div id="modal-stock" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:12px;padding:28px 32px;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.18);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="mdi mdi-alert-circle-outline" style="font-size:1.4rem;color:#dc3545;"></i>
+            </div>
+            <div>
+                <div style="font-weight:600;">Stock insuffisant</div>
+                <div id="modal-stock-msg" style="font-size:.85rem;color:#6c757d;margin-top:2px;"></div>
+            </div>
+        </div>
+        <div style="text-align:right;">
+            <button id="modal-stock-ok" class="btn btn-danger btn-sm px-4">OK</button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        // Sauvegarder les produits sélectionnés
-        var tabProduitSelect = [];
-        var totale = 0;
+<script>
+(function () {
+    var panier = {}; // { id: { nom, prix, stock, quantite } }
 
-        $(".produit-ligne").on("click", function() {
-            var checkbox = $(this).find(".produit-checkbox");
-            checkbox.prop("checked", !checkbox.prop("checked"));
-            checkbox.trigger("change");
+    var modalStock    = document.getElementById('modal-stock');
+    var modalStockMsg = document.getElementById('modal-stock-msg');
+    document.getElementById('modal-stock-ok').addEventListener('click', function () {
+        modalStock.style.display = 'none';
+    });
+
+    function afficherErreurStock(msg) {
+        modalStockMsg.textContent = msg;
+        modalStock.style.display = 'flex';
+    }
+
+    function majAffichage() {
+        var ids = Object.keys(panier);
+        var tbody = document.getElementById('tbody-panier');
+        var tablePanier = document.getElementById('table-panier');
+        var panierVide  = document.getElementById('panier-vide');
+        var btnValider  = document.getElementById('btn-valider');
+        var nbArticles  = document.getElementById('nb-articles');
+
+        tbody.innerHTML = '';
+        var total = 0;
+
+        ids.forEach(function (id) {
+            var item = panier[id];
+            var sous = item.prix * item.quantite;
+            total += sous;
+
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="font-size:.83rem;font-weight:500;">' + item.nom + '</td>' +
+                '<td><input type="number" class="form-control form-control-sm qte-panier" ' +
+                    'min="1" max="' + item.stock + '" value="' + item.quantite + '" ' +
+                    'data-id="' + id + '" style="width:70px;"></td>' +
+                '<td style="font-size:.83rem;">' + sous.toLocaleString('fr-FR') + ' F</td>' +
+                '<td><button type="button" class="btn btn-sm btn-link text-danger p-0 retirer-panier" data-id="' + id + '">' +
+                    '<i class="mdi mdi-trash-can-outline"></i></button></td>';
+            tbody.appendChild(tr);
         });
 
-        $(".produit-checkbox").on("change", function() {
-            var idProduit = $(this).attr("data-produit-id");
-            var prixProduit = $(this).attr("data-produit-prix");
-            var nomProduit = $(this).attr("data-produit-nom");
-            var stockProduit = $(this).attr("data-produit-stock");
+        var vide = ids.length === 0;
+        panierVide.style.display  = vide ? 'block' : 'none';
+        tablePanier.style.display = vide ? 'none'  : 'table';
+        btnValider.disabled = vide;
+        nbArticles.textContent = ids.length;
+        document.getElementById('montant-total').textContent = total.toLocaleString('fr-FR') + ' FCFA';
 
-            if (parseFloat(stockProduit) == 0) {
-                $('.messageStock').text('Ce produit est indisponible pour le moment');
-                $('.bs-example-modal-center').modal('show');
-                $(this)[0].checked = false;
-            } else {
-                if ($(this).is(':checked')) {
-                    tabProduitSelect.push({
-                        id: idProduit,
-                        quantite: 1,
-                        prix: prixProduit,
-                        coutProduit: prixProduit,
-                        stock: stockProduit,
-                        nomproduit: nomProduit
-                    });
-
-                    $('#produitSelectioner').append(
-                        '<tr class="produit' + idProduit + '">' +
-                        '<td class="text-right nom">' + nomProduit + '</td>' +
-                        '<td class="text-left"><span class="prix">' + prixProduit + '</span></td>' +
-                        '<td class="text-left"><input type="number" class="form-control border-primary border-2 quantite-input" min="0" value="1" data-produit-stock="' + stockProduit + '" data-produit-id="' + idProduit + '"></td>' +
-                        '<td class="text-right"><span class="cout">' + prixProduit + '</span></td>' +
-                        '</tr>'
-                    );
-                    totale = totale + parseFloat(prixProduit);
-                    $("#montant_total").text(totale);
-                } else {
-                    $('.produit' + idProduit).remove();
-                    for (let index = 0; index < tabProduitSelect.length; index++) {
-                        if (tabProduitSelect[index].id == idProduit) {
-                            totale = totale - tabProduitSelect[index].coutProduit;
-                            $("#montant_total").text(totale);
-                        }
-                    }
-                    tabProduitSelect = tabProduitSelect.filter((element) => { return element.id != idProduit });
-                }
-            }
-            console.log(tabProduitSelect);
+        // boutons ajouter : désactiver si déjà dans le panier
+        document.querySelectorAll('.btn-ajouter').forEach(function (btn) {
+            var bid = btn.getAttribute('data-id');
+            btn.disabled = !!panier[bid];
+            btn.innerHTML = panier[bid]
+                ? '<i class="mdi mdi-check"></i>'
+                : '<i class="mdi mdi-plus"></i>';
+            btn.className = panier[bid]
+                ? 'btn btn-sm btn-success btn-ajouter'
+                : 'btn btn-sm btn-outline-primary btn-ajouter';
         });
+    }
 
-        $("body").on('keyup', '.quantite-input', function() {
-            var quantiter = $(this).val();
-            var idProduit = $(this).attr("data-produit-id");
-            var stockProduit = $(this).attr("data-produit-stock");
-            var parenttr = $(this).parent().parent();
-            var enfant = parenttr.children();
-            var prix = enfant.find('.prix').text();
-            var coutspan = enfant.find('.cout');
-            if (quantiter == 0 || quantiter == undefined || quantiter == null) {
-                coutspan.text(prix);
-            } else {
-                if (parseFloat(quantiter) > parseFloat(stockProduit)) {
-                    $('.messageStock').text('La quantité sélectionnée est supérieure au stock');
-                    $('.bs-example-modal-center').modal('show');
-                } else {
-                    var cout = parseFloat(prix) * parseFloat(quantiter);
-                    coutspan.text(cout);
-                    for (let index = 0; index < tabProduitSelect.length; index++) {
-                        if (tabProduitSelect[index].id == idProduit) {
-                            tabProduitSelect[index].quantite = quantiter;
-                            totale = totale - tabProduitSelect[index].coutProduit + cout;
-                            tabProduitSelect[index].coutProduit = cout;
-                            $("#montant_total").text(totale);
-                        }
-                    }
-                }
-                console.log(tabProduitSelect);
-            }
-        });
+    // Ajouter produit au panier
+    document.getElementById('tbody-produits').addEventListener('click', function (e) {
+        var btn = e.target.closest('.btn-ajouter');
+        if (!btn || btn.disabled) return;
+        var row = btn.closest('tr');
+        var id    = row.getAttribute('data-id');
+        var nom   = row.getAttribute('data-nom');
+        var prix  = parseFloat(row.getAttribute('data-prix'));
+        var stock = parseInt(row.getAttribute('data-stock'));
 
-        $('#envoyer').click(function() {
-            $('#venteValider').val(JSON.stringify(tabProduitSelect));
+        if (stock <= 0) { afficherErreurStock('Ce produit est en rupture de stock.'); return; }
+        panier[id] = { nom: nom, prix: prix, stock: stock, quantite: 1 };
+        majAffichage();
+    });
+
+    // Modifier quantité / retirer dans le panier
+    document.getElementById('tbody-panier').addEventListener('input', function (e) {
+        if (!e.target.classList.contains('qte-panier')) return;
+        var id  = e.target.getAttribute('data-id');
+        var val = parseInt(e.target.value) || 1;
+        if (val > panier[id].stock) {
+            afficherErreurStock('Stock disponible : ' + panier[id].stock);
+            e.target.value = panier[id].stock;
+            val = panier[id].stock;
+        }
+        panier[id].quantite = val;
+        majAffichage();
+    });
+
+    document.getElementById('tbody-panier').addEventListener('click', function (e) {
+        var btn = e.target.closest('.retirer-panier');
+        if (!btn) return;
+        var id = btn.getAttribute('data-id');
+        delete panier[id];
+        majAffichage();
+    });
+
+    // Recherche produit
+    document.getElementById('recherche-produit').addEventListener('input', function () {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.produit-row').forEach(function (tr) {
+            tr.style.display = tr.getAttribute('data-nom').toLowerCase().includes(q) ? '' : 'none';
         });
-    </script>
+    });
+
+    // Soumission : construire JSON
+    document.getElementById('form-vente').addEventListener('submit', function (e) {
+        var lignes = Object.keys(panier).map(function (id) {
+            var item = panier[id];
+            return {
+                id: id,
+                quantite: item.quantite,
+                prix: item.prix,
+                coutProduit: item.prix * item.quantite,
+                nomproduit: item.nom
+            };
+        });
+        if (lignes.length === 0) { e.preventDefault(); return; }
+        document.getElementById('venteValider').value = JSON.stringify(lignes);
+    });
+
+    majAffichage();
+})();
+</script>
 {% endblock %}
