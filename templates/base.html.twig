@@ -150,8 +150,16 @@
       color: #ced4da;
       transition: transform .2s;
     }
-    .sidebar-link[aria-expanded="true"] .arrow {
+    .sidebar-link.expanded .arrow {
       transform: rotate(90deg);
+    }
+    .sidebar-submenu-wrapper {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+    }
+    .sidebar-submenu-wrapper.open {
+      max-height: 300px;
     }
     .sidebar-submenu {
       list-style: none;
@@ -246,30 +254,30 @@
 <!-- SIDEBAR -->
 <nav id="sidebar">
 
-  <a href="{{ path('app_admin') }}" class="sidebar-link {{ app.request.get('_route') == 'app_admin' ? 'active' : '' }}">
+  {% set r = app.request.get('_route') %}
+
+  <a href="{{ path('app_admin') }}" class="sidebar-link {{ r == 'app_admin' ? 'active' : '' }}">
     <i class="mdi mdi-view-dashboard-outline"></i> Tableau de bord
   </a>
 
   <div class="sidebar-category">Boutique</div>
 
-  <a class="sidebar-link {{ app.request.get('_route') starts with 'app_produit' ? 'active' : '' }}"
-     data-bs-toggle="collapse" href="#m-articles"
-     aria-expanded="{{ app.request.get('_route') starts with 'app_produit' ? 'true' : 'false' }}">
+  {% set articlesOpen = r starts with 'app_produit' %}
+  <a class="sidebar-link {{ articlesOpen ? 'expanded' : '' }}" data-target="m-articles" href="#">
     <i class="mdi mdi-package-variant-closed"></i> Articles <i class="mdi mdi-chevron-right arrow"></i>
   </a>
-  <div class="collapse {{ app.request.get('_route') starts with 'app_produit' ? 'show' : '' }}" id="m-articles">
+  <div class="sidebar-submenu-wrapper {{ articlesOpen ? 'open' : '' }}" id="m-articles">
     <ul class="sidebar-submenu">
       <li><a class="sidebar-link" href="{{ path('app_produit_new') }}">Ajouter</a></li>
       <li><a class="sidebar-link" href="{{ path('app_produit_index') }}">Liste</a></li>
     </ul>
   </div>
 
-  <a class="sidebar-link {{ app.request.get('_route') starts with 'app_vente' ? 'active' : '' }}"
-     data-bs-toggle="collapse" href="#m-ventes"
-     aria-expanded="{{ app.request.get('_route') starts with 'app_vente' ? 'true' : 'false' }}">
+  {% set ventesOpen = r starts with 'app_vente' %}
+  <a class="sidebar-link {{ ventesOpen ? 'expanded' : '' }}" data-target="m-ventes" href="#">
     <i class="mdi mdi-cart-outline"></i> Ventes <i class="mdi mdi-chevron-right arrow"></i>
   </a>
-  <div class="collapse {{ app.request.get('_route') starts with 'app_vente' ? 'show' : '' }}" id="m-ventes">
+  <div class="sidebar-submenu-wrapper {{ ventesOpen ? 'open' : '' }}" id="m-ventes">
     <ul class="sidebar-submenu">
       <li><a class="sidebar-link" href="{{ path('app_vente_new') }}">Nouvelle vente</a></li>
       <li><a class="sidebar-link" href="{{ path('app_vente_index') }}">Liste des ventes</a></li>
@@ -277,12 +285,11 @@
   </div>
 
   {% if is_granted('ROLE_RESPONSABLE') %}
-  <a class="sidebar-link {{ app.request.get('_route') starts with 'app_approvisionnement' ? 'active' : '' }}"
-     data-bs-toggle="collapse" href="#m-appro"
-     aria-expanded="{{ app.request.get('_route') starts with 'app_approvisionnement' ? 'true' : 'false' }}">
+  {% set approOpen = r starts with 'app_approvisionnement' %}
+  <a class="sidebar-link {{ approOpen ? 'expanded' : '' }}" data-target="m-appro" href="#">
     <i class="mdi mdi-truck-delivery-outline"></i> Approvisionnements <i class="mdi mdi-chevron-right arrow"></i>
   </a>
-  <div class="collapse {{ app.request.get('_route') starts with 'app_approvisionnement' ? 'show' : '' }}" id="m-appro">
+  <div class="sidebar-submenu-wrapper {{ approOpen ? 'open' : '' }}" id="m-appro">
     <ul class="sidebar-submenu">
       <li><a class="sidebar-link" href="{{ path('app_approvisionnement_new') }}">Ajouter</a></li>
       <li><a class="sidebar-link" href="{{ path('app_approvisionnement_index') }}">Liste</a></li>
@@ -292,24 +299,22 @@
 
   <div class="sidebar-category">Paramètres</div>
 
-  <a class="sidebar-link {{ app.request.get('_route') starts with 'app_categorie' ? 'active' : '' }}"
-     data-bs-toggle="collapse" href="#m-cat"
-     aria-expanded="{{ app.request.get('_route') starts with 'app_categorie' ? 'true' : 'false' }}">
+  {% set catOpen = r starts with 'app_categorie' %}
+  <a class="sidebar-link {{ catOpen ? 'expanded' : '' }}" data-target="m-cat" href="#">
     <i class="mdi mdi-tag-multiple-outline"></i> Catégories <i class="mdi mdi-chevron-right arrow"></i>
   </a>
-  <div class="collapse {{ app.request.get('_route') starts with 'app_categorie' ? 'show' : '' }}" id="m-cat">
+  <div class="sidebar-submenu-wrapper {{ catOpen ? 'open' : '' }}" id="m-cat">
     <ul class="sidebar-submenu">
       <li><a class="sidebar-link" href="{{ path('app_categorie_new') }}">Ajouter</a></li>
       <li><a class="sidebar-link" href="{{ path('app_categorie_index') }}">Liste</a></li>
     </ul>
   </div>
 
-  <a class="sidebar-link {{ app.request.get('_route') starts with 'app_client' ? 'active' : '' }}"
-     data-bs-toggle="collapse" href="#m-clients"
-     aria-expanded="{{ app.request.get('_route') starts with 'app_client' ? 'true' : 'false' }}">
+  {% set clientOpen = r starts with 'app_client' %}
+  <a class="sidebar-link {{ clientOpen ? 'expanded' : '' }}" data-target="m-clients" href="#">
     <i class="mdi mdi-account-group-outline"></i> Clients <i class="mdi mdi-chevron-right arrow"></i>
   </a>
-  <div class="collapse {{ app.request.get('_route') starts with 'app_client' ? 'show' : '' }}" id="m-clients">
+  <div class="sidebar-submenu-wrapper {{ clientOpen ? 'open' : '' }}" id="m-clients">
     <ul class="sidebar-submenu">
       <li><a class="sidebar-link" href="{{ path('app_client_index') }}">Liste des clients</a></li>
     </ul>
@@ -318,12 +323,11 @@
   {% if is_granted('ROLE_RESPONSABLE') %}
   <div class="sidebar-category">Administration</div>
 
-  <a class="sidebar-link {{ app.request.get('_route') starts with 'app_utilisateur' or app.request.get('_route') == 'app_inscription' ? 'active' : '' }}"
-     data-bs-toggle="collapse" href="#m-users"
-     aria-expanded="{{ app.request.get('_route') starts with 'app_utilisateur' or app.request.get('_route') == 'app_inscription' ? 'true' : 'false' }}">
+  {% set usersOpen = r starts with 'app_utilisateur' or r == 'app_inscription' %}
+  <a class="sidebar-link {{ usersOpen ? 'expanded' : '' }}" data-target="m-users" href="#">
     <i class="mdi mdi-account-cog-outline"></i> Comptes utilisateurs <i class="mdi mdi-chevron-right arrow"></i>
   </a>
-  <div class="collapse {{ app.request.get('_route') starts with 'app_utilisateur' or app.request.get('_route') == 'app_inscription' ? 'show' : '' }}" id="m-users">
+  <div class="sidebar-submenu-wrapper {{ usersOpen ? 'open' : '' }}" id="m-users">
     <ul class="sidebar-submenu">
       <li><a class="sidebar-link" href="{{ path('app_inscription') }}">Ajouter</a></li>
       <li><a class="sidebar-link" href="{{ path('app_utilisateur_index') }}">Liste des comptes</a></li>
@@ -333,8 +337,8 @@
 
   <hr class="sidebar-divider mt-3">
 
-  <a href="{{ path('app_logout') }}" class="sidebar-link text-danger">
-    <i class="mdi mdi-power" style="color:#dc3545 !important;"></i> Déconnexion
+  <a href="{{ path('app_logout') }}" class="sidebar-link" style="color:#dc3545;">
+    <i class="mdi mdi-power" style="color:#dc3545;"></i> Déconnexion
   </a>
 
 </nav>
@@ -367,14 +371,41 @@
   </div>
 </div>
 
+<!-- jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery + DataTables -->
-<script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+<!-- DataTables -->
 <script src="{{ asset('assets/datatables/datatables.min.js') }}"></script>
 <script>
 $(document).ready(function () {
-  $('#myTable').DataTable({ language: { url: '' } });
+  if ($('#myTable').length) {
+    $('#myTable').DataTable();
+  }
+});
+</script>
+
+<!-- Sidebar collapse toggle maison -->
+<script>
+document.querySelectorAll('.sidebar-link[data-target]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var isOpen = target.classList.contains('open');
+    // Fermer tous les autres
+    document.querySelectorAll('.sidebar-submenu-wrapper.open').forEach(function(el) {
+      el.classList.remove('open');
+    });
+    document.querySelectorAll('.sidebar-link[data-target]').forEach(function(l) {
+      l.classList.remove('expanded');
+    });
+    if (!isOpen) {
+      target.classList.add('open');
+      this.classList.add('expanded');
+    }
+  });
 });
 </script>
 
