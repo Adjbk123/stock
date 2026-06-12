@@ -53,13 +53,27 @@ class AdminController extends AbstractController
 
         $ventesSemaine = $this->venteRepository->findVentesSemaine($weekStartDate, $weekEndDate);
 
+        // Données pour les graphiques — un point par jour lun→dim
+        $jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        $statsParJour = $this->venteRepository->findStatsParJourSemaine($weekStartDate, $weekEndDate);
 
+        $chartNbVentes  = array_fill(0, 7, 0);
+        $chartMontants  = array_fill(0, 7, 0);
+        foreach ($statsParJour as $stat) {
+            $date = $stat['jour'] instanceof \DateTimeInterface ? $stat['jour'] : new \DateTimeImmutable($stat['jour']);
+            $index = ((int)$date->format('N')) - 1; // 0=lun … 6=dim
+            $chartNbVentes[$index]  = (int)$stat['nbVentes'];
+            $chartMontants[$index]  = (float)$stat['montant'];
+        }
 
         return $this->render('admin/index.html.twig', [
-            'montantJour' => $montantTotalVentes,
-            'montantCaisse'=>$montantCaisse,
-            'totalVentes' => $totalVentes,
-            'ventesSemaines'=>$ventesSemaine
+            'montantJour'    => $montantTotalVentes,
+            'montantCaisse'  => $montantCaisse,
+            'totalVentes'    => $totalVentes,
+            'ventesSemaines' => $ventesSemaine,
+            'chartJours'     => json_encode($jours),
+            'chartNbVentes'  => json_encode($chartNbVentes),
+            'chartMontants'  => json_encode($chartMontants),
         ]);
     }
 }

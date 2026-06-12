@@ -65,6 +65,37 @@
 
 </div>
 
+{# ── Graphiques ── #}
+<div class="row g-4 mb-4">
+
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="mb-0 fw-semibold">
+                    <span class="mdi mdi-chart-bar me-2 text-primary"></span>Nombre de ventes — semaine en cours
+                </h6>
+            </div>
+            <div class="card-body">
+                <canvas id="chartVentes" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="mb-0 fw-semibold">
+                    <span class="mdi mdi-chart-line me-2 text-success"></span>Montant des ventes (FCFA) — semaine en cours
+                </h6>
+            </div>
+            <div class="card-body">
+                <canvas id="chartMontants" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 {# ── Ventes de la semaine ── #}
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3">
@@ -118,4 +149,58 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    const jours    = {{ chartJours|raw }};
+    const nbVentes = {{ chartNbVentes|raw }};
+    const montants = {{ chartMontants|raw }};
+
+    new Chart(document.getElementById('chartVentes'), {
+        type: 'bar',
+        data: {
+            labels: jours,
+            datasets: [{
+                label: 'Ventes',
+                data: nbVentes,
+                backgroundColor: 'rgba(74, 144, 226, 0.7)',
+                borderColor: 'rgba(74, 144, 226, 1)',
+                borderWidth: 1,
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+
+    new Chart(document.getElementById('chartMontants'), {
+        type: 'line',
+        data: {
+            labels: jours,
+            datasets: [{
+                label: 'Montant (FCFA)',
+                data: montants,
+                fill: true,
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(40, 167, 69, 1)',
+                pointRadius: 5,
+                tension: 0.4,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+})();
+</script>
 {% endblock %}

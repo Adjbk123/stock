@@ -38,6 +38,20 @@ class VenteRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function findStatsParJourSemaine(\DateTimeImmutable $debut, \DateTimeImmutable $fin): array
+    {
+        return $this->createQueryBuilder('v')
+            ->select('v.dateVente as jour, COUNT(v.id) as nbVentes, SUM(v.montantTotal) as montant')
+            ->andWhere('v.dateVente >= :debut')
+            ->andWhere('v.dateVente <= :fin')
+            ->setParameter('debut', $debut->format('Y-m-d'))
+            ->setParameter('fin', $fin->format('Y-m-d'))
+            ->groupBy('v.dateVente')
+            ->orderBy('v.dateVente', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findVentesSemaine(\DateTimeImmutable $debut, \DateTimeImmutable $fin): array
     {
         return $this->createQueryBuilder('v')
