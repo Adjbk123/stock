@@ -18,7 +18,11 @@
       <div class="navbar-menu-wrapper d-flex align-items-top"> 
         <ul class="navbar-nav">
           <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-            <h1 class="welcome-text">Bienvenue, <span class="text-black fw-bold"> {{app.user.nom}} {{app.user.prenom}} !  </span></h1>
+            <h1 class="welcome-text">Bienvenue, <span class="fw-bold">{{ app.user.nom }} {{ app.user.prenom }}</span>
+              <span class="ms-2 badge" style="font-size:.7rem;background:#e8f0fe;color:#1a253f;font-weight:600;vertical-align:middle;">
+                {% if is_granted('ROLE_RESPONSABLE') %}Responsable{% else %}Tenancier{% endif %}
+              </span>
+            </h1>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">

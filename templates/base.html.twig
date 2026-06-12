@@ -24,12 +24,108 @@
   <link href="{{ asset('assets/datatables/datatables.min.css') }}" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ── Base ── */
     body {
       font-family: 'Montserrat', sans-serif;
+      background-color: #f4f7fc;
     }
-    .menu-title{
+
+    /* ── Navbar ── */
+    .navbar.default-layout {
+      background: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08) !important;
+      border-bottom: none !important;
+    }
+    .navbar .navbar-brand-wrapper {
+      background: #1a253f !important;
+    }
+    .navbar .navbar-brand-wrapper h3 {
+      color: #ffffff !important;
+      font-size: 1.2rem;
+      letter-spacing: .1em;
+    }
+    .navbar .navbar-menu-wrapper {
+      background: #ffffff !important;
+    }
+    .welcome-text {
+      font-size: 1rem !important;
+      color: #4a5568;
+    }
+    .welcome-text span {
+      color: #1a253f !important;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: #1a253f !important;
+      box-shadow: 2px 0 8px rgba(0,0,0,.15);
+    }
+    .sidebar .nav .nav-item .nav-link {
+      color: #a8b8d8 !important;
+      border-radius: 6px;
+      margin: 2px 10px;
+      transition: all .2s;
+    }
+    .sidebar .nav .nav-item .nav-link:hover,
+    .sidebar .nav .nav-item.active > .nav-link {
+      background: rgba(255,255,255,.1) !important;
+      color: #ffffff !important;
+    }
+    .sidebar .nav .nav-item .nav-link .menu-icon,
+    .sidebar .nav .nav-item .nav-link i {
+      color: #a8b8d8 !important;
+    }
+    .sidebar .nav .nav-item .nav-link:hover .menu-icon,
+    .sidebar .nav .nav-item.active > .nav-link .menu-icon {
+      color: #ffffff !important;
+    }
+    .sidebar .nav .nav-item.nav-category {
+      color: #556280 !important;
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 18px 20px 6px;
+    }
+    .sidebar .nav .sub-menu .nav-item .nav-link {
+      color: #8899bb !important;
+      font-size: .85rem;
+    }
+    .sidebar .nav .sub-menu .nav-item .nav-link:hover {
+      color: #ffffff !important;
+      background: rgba(255,255,255,.07) !important;
+    }
+    .sidebar .nav .menu-arrow {
+      color: #a8b8d8 !important;
+    }
+
+    /* ── Content ── */
+    .main-panel {
+      background: #f4f7fc !important;
+    }
+    .content-wrapper {
+      background: #f4f7fc !important;
+    }
+    .home-tab .nav-tabs .nav-link.active {
+      color: #1a253f !important;
+      font-weight: 600;
+      border-bottom: 2px solid #4e73df;
+    }
+    .home-tab .nav-tabs .nav-link {
+      color: #6c757d;
+    }
+
+    /* ── Cards globales ── */
+    .card {
+      border: none !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      border-radius: 10px !important;
+    }
+
+    /* ── Menu title ── */
+    .menu-title {
       font-family: 'Montserrat', sans-serif !important;
-      font-size: 16px !important;
+      font-size: .9rem !important;
     }
   </style>
 
