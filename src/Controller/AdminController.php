@@ -48,18 +48,10 @@ class AdminController extends AbstractController
             $montantCaisse += $vente->getMontantTotal();
         }
 
-        // listes des ventes de la semaine
+        $weekStartDate = $today->modify('Monday this week');
+        $weekEndDate = $today->modify('Sunday this week');
 
-        $cejour = new DateTimeImmutable();
-        $weekStartDate = $today->modify('this week')->modify('next Monday');
-        $weekEndDate = $weekStartDate->modify('+5 days');
-
-        $ventesSemaine = $this->venteRepository->findBy([
-            'dateVente' => [
-                '>=', $weekStartDate->format('Y-m-d H:i:s'),
-                '<=', $weekEndDate->format('Y-m-d H:i:s')
-            ]
-        ]);
+        $ventesSemaine = $this->venteRepository->findVentesSemaine($weekStartDate, $weekEndDate);
 
 
 

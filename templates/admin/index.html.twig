@@ -1,97 +1,121 @@
 {% extends 'base.html.twig' %}
 {% block bouton %}
-    <a href="{{ path('app_vente_new') }}"
-       class="btn btn-primary text-white me-0"><span
-                class="mdi mdi-cart-arrow-right"></span> Effectuer une vente</a>
+    <a href="{{ path('app_vente_new') }}" class="btn btn-primary text-white">
+        <span class="mdi mdi-cart-arrow-right"></span> Nouvelle vente
+    </a>
 {% endblock %}
-{% block breadcrumb %}
-    Tableau de bord
-{% endblock %}
+{% block breadcrumb %}Tableau de bord{% endblock %}
+
 {% block body %}
 
-    <div>
-        {% for flashMessage in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ flashMessage }}
+{% for flashMessage in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ flashMessage }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+{% endfor %}
+
+{# ── KPI Cards ── #}
+<div class="row g-4 mb-4">
+
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:56px;height:56px;background:#e8f4fd;flex-shrink:0;">
+                    <span class="mdi mdi-cart-outline text-primary" style="font-size:1.8rem;"></span>
+                </div>
+                <div>
+                    <p class="text-muted mb-1" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;">Ventes du jour</p>
+                    <h3 class="mb-0 fw-bold">{{ totalVentes }}</h3>
+                </div>
             </div>
-        {% endfor %}
-    </div>
-
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover mt-3">
-            <thead class="table-secondary">
-            <tr>
-                <th>Nombre de vente du jour</th>
-                <th>Recette du jour</th>
-                <th>Montant en caisse</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-
-                <td style="font-weight: bold; font-size: 24px;">
-
-                    {{ totalVentes }} vente(s) en ce jour
-
-                </td>
-                <td style="font-weight: bold; font-size: 24px;">
-
-                    {{ montantJour }} Fcfa
-
-                </td>
-
-                <td style="font-weight: bold; font-size: 24px;">
-
-                    {{ montantCaisse }} Fcfa
-
-                </td>
-
-            </tr>
-
-            </tbody>
-        </table>
-    </div>
-
-    <div class="my-5">
-        <hr>
-        <div class="text-center">
-            <h3>
-                Listes des ventes de la semaines
-            </h3>
         </div>
-        <hr>
     </div>
-<div class="col-12">
 
-            <table class="table table-hover table-bordered" id="myTable">
-                <thead class="table-secondary">
-                <tr>
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:56px;height:56px;background:#eaf6ec;flex-shrink:0;">
+                    <span class="mdi mdi-cash-multiple text-success" style="font-size:1.8rem;"></span>
+                </div>
+                <div>
+                    <p class="text-muted mb-1" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;">Recette du jour</p>
+                    <h3 class="mb-0 fw-bold">{{ montantJour|number_format(0, ',', ' ') }} <small class="fs-6 fw-normal text-muted">FCFA</small></h3>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <th>Nom Client</th>
-                    <th>Montant</th>
-                    <th>Quantité Stock</th>
-                    <th>Date Ajout</th>
-                    {#                                        <th>Action</th> #}
-                </tr>
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:56px;height:56px;background:#fff4e5;flex-shrink:0;">
+                    <span class="mdi mdi-bank-outline text-warning" style="font-size:1.8rem;"></span>
+                </div>
+                <div>
+                    <p class="text-muted mb-1" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;">Total en caisse</p>
+                    <h3 class="mb-0 fw-bold">{{ montantCaisse|number_format(0, ',', ' ') }} <small class="fs-6 fw-normal text-muted">FCFA</small></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{# ── Ventes de la semaine ── #}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3">
+        <h5 class="mb-0 fw-semibold">
+            <span class="mdi mdi-calendar-week me-2 text-primary"></span>Ventes de la semaine
+        </h5>
+        <a href="{{ path('app_vente_index') }}" class="btn btn-sm btn-outline-primary">Voir tout</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="myTable">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="px-4 py-3">Client</th>
+                        <th class="py-3">Montant</th>
+                        <th class="py-3">Date</th>
+                        <th class="py-3">Heure</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {% for ventesSemaine in ventesSemaines %}
+                {% for vente in ventesSemaines %}
                     <tr>
-                        <td>{{ ventesSemaine.client.nomsClient }}</td>
-                        <td>{{ ventesSemaine.montantTotal }} Fcfa</td>
-                        <td>oo</td>
-                        <td>{{ ventesSemaine.dateVente ? ventesSemaine.dateVente|date('Y-m-d') : '' }}</td>
-                        {#                                            <td> #}
-                        {#                                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}">Voir</a> #}
-                        {#                                                <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">Modifier</a> #}
-                        {#                                            </td> #}
+                        <td class="px-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                     style="width:34px;height:34px;font-size:.8rem;flex-shrink:0;">
+                                    {{ vente.client.nomsClient|first|upper }}
+                                </div>
+                                <span class="fw-medium">{{ vente.client.nomsClient }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success px-3 py-2" style="font-size:.9rem;">
+                                {{ vente.montantTotal|number_format(0, ',', ' ') }} FCFA
+                            </span>
+                        </td>
+                        <td>{{ vente.dateVente ? vente.dateVente|date('d/m/Y') : '-' }}</td>
+                        <td>{{ vente.heureVente ? vente.heureVente|date('H:i') : '-' }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <span class="mdi mdi-information-outline" style="font-size:2rem;"></span>
+                            <p class="mt-2 mb-0">Aucune vente cette semaine</p>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-
+        </div>
+    </div>
 </div>
 
 {% endblock %}
