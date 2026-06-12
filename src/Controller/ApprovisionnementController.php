@@ -6,6 +6,7 @@ use App\Entity\Approvisionnement;
 use App\Form\ApprovisionnementType;
 use App\Repository\ApprovisionnementRepository;
 use App\Repository\ProduitRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,8 @@ class ApprovisionnementController extends AbstractController
     public function new(
         Request $request,
         ApprovisionnementRepository $approvisionnementRepository,
-        ProduitRepository $produitRepository): Response
+        ProduitRepository $produitRepository,
+        EntityManagerInterface $em): Response
     {
         if ($request->isMethod('POST')) {
             $produitsIds = $request->request->all('produits');
@@ -37,7 +39,6 @@ class ApprovisionnementController extends AbstractController
                 ? new \DateTimeImmutable($dateStr)
                 : new \DateTimeImmutable();
 
-            $em = $approvisionnementRepository->getEntityManager();
             $enregistres = 0;
 
             foreach ($produitsIds as $i => $produitId) {
