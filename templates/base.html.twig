@@ -264,7 +264,7 @@
 
   {% set articlesOpen = r starts with 'app_produit' %}
   <a class="sidebar-link {{ articlesOpen ? 'expanded' : '' }}" data-target="m-articles" href="#">
-    <i class="mdi mdi-package-variant-closed"></i> Articles <i class="mdi mdi-chevron-right arrow"></i>
+    <i class="mdi mdi-store"></i> Articles <i class="mdi mdi-chevron-right arrow"></i>
   </a>
   <div class="sidebar-submenu-wrapper {{ articlesOpen ? 'open' : '' }}" id="m-articles">
     <ul class="sidebar-submenu">
@@ -301,7 +301,7 @@
 
   {% set catOpen = r starts with 'app_categorie' %}
   <a class="sidebar-link {{ catOpen ? 'expanded' : '' }}" data-target="m-cat" href="#">
-    <i class="mdi mdi-tag-multiple-outline"></i> Catégories <i class="mdi mdi-chevron-right arrow"></i>
+    <i class="mdi mdi-tag-multiple"></i> Catégories <i class="mdi mdi-chevron-right arrow"></i>
   </a>
   <div class="sidebar-submenu-wrapper {{ catOpen ? 'open' : '' }}" id="m-cat">
     <ul class="sidebar-submenu">
@@ -325,7 +325,7 @@
 
   {% set usersOpen = r starts with 'app_utilisateur' or r == 'app_inscription' %}
   <a class="sidebar-link {{ usersOpen ? 'expanded' : '' }}" data-target="m-users" href="#">
-    <i class="mdi mdi-account-cog-outline"></i> Comptes utilisateurs <i class="mdi mdi-chevron-right arrow"></i>
+    <i class="mdi mdi-account-settings"></i> Comptes utilisateurs <i class="mdi mdi-chevron-right arrow"></i>
   </a>
   <div class="sidebar-submenu-wrapper {{ usersOpen ? 'open' : '' }}" id="m-users">
     <ul class="sidebar-submenu">
