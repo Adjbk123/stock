@@ -287,7 +287,7 @@
   {% if is_granted('ROLE_RESPONSABLE') %}
   {% set approOpen = r starts with 'app_approvisionnement' %}
   <a class="sidebar-link {{ approOpen ? 'expanded' : '' }}" data-target="m-appro" href="#">
-    <i class="mdi mdi-truck-delivery-outline"></i> Approvisionnements <i class="mdi mdi-chevron-right arrow"></i>
+    <i class="mdi mdi-truck"></i> Approvisionnements <i class="mdi mdi-chevron-right arrow"></i>
   </a>
   <div class="sidebar-submenu-wrapper {{ approOpen ? 'open' : '' }}" id="m-appro">
     <ul class="sidebar-submenu">
