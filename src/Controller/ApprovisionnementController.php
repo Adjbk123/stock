@@ -28,41 +28,49 @@ class ApprovisionnementController extends AbstractController
         ApprovisionnementRepository $approvisionnementRepository,
         ProduitRepository $produitRepository): Response
     {
-        $approvisionnement = new Approvisionnement();
-        $form = $this->createForm(ApprovisionnementType::class, $approvisionnement);
-        $form->handleRequest($request);
+        if ($request->isMethod('POST')) {
+            $produitsIds = $request->request->all('produits');
+            $quantites   = $request->request->all('quantites');
+            $dateStr     = $request->request->get('dateAppro');
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            $date = $dateStr
+                ? new \DateTimeImmutable($dateStr)
+                : new \DateTimeImmutable();
 
-            $quantiteApprovisionnement = $approvisionnement->getQuantite();
-            $produit = $approvisionnement->getProduit();
+            $em = $approvisionnementRepository->getEntityManager();
+            $enregistres = 0;
 
-            // Mettre à jour la quantité du produit
-            $quantiteProduit = $produit->getQuantiteStock();
-            $nouvelleQuantiteProduit = $quantiteProduit + $quantiteApprovisionnement;
-            $produit->setQuantiteStock($nouvelleQuantiteProduit);
+            foreach ($produitsIds as $i => $produitId) {
+                $quantite = isset($quantites[$i]) ? (int)$quantites[$i] : 0;
+                if (!$produitId || $quantite <= 0) continue;
 
-            // Récupérer le prix du produit
-            $prixProduit = $produit->getPrix();
+                $produit = $produitRepository->find($produitId);
+                if (!$produit) continue;
 
-            // Définir le coût unitaire au niveau de l'approvisionnement
-            $coutUnitaire = $prixProduit * $quantiteApprovisionnement;
-            $approvisionnement->setCoutUnit($coutUnitaire);
+                $appro = new Approvisionnement();
+                $appro->setProduit($produit);
+                $appro->setQuantite($quantite);
+                $appro->setDateAppro($date);
+                $appro->setCoutUnit($produit->getPrix() * $quantite);
 
-            // Enregistrer l'approvisionnement et mettre à jour le produit
-            $approvisionnementRepository->save($approvisionnement, true);
-            $produitRepository->save($produit, true);
+                $produit->setQuantiteStock($produit->getQuantiteStock() + $quantite);
 
+                $em->persist($appro);
+                $enregistres++;
+            }
 
+            if ($enregistres > 0) {
+                $em->flush();
+                $this->addFlash('success', $enregistres . ' approvisionnement(s) enregistré(s) avec succès.');
+            } else {
+                $this->addFlash('danger', 'Aucune ligne valide à enregistrer.');
+            }
 
-
-
-            return $this->redirectToRoute('app_approvisionnement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_approvisionnement_index');
         }
 
-        return $this->renderForm('approvisionnement/new.html.twig', [
-            'approvisionnement' => $approvisionnement,
-            'form' => $form,
+        return $this->render('approvisionnement/new.html.twig', [
+            'produits' => $produitRepository->findAll(),
         ]);
     }
 
@@ -82,7 +90,6 @@ class ApprovisionnementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $approvisionnementRepository->save($approvisionnement, true);
-
             return $this->redirectToRoute('app_approvisionnement_index', [], Response::HTTP_SEE_OTHER);
         }
 

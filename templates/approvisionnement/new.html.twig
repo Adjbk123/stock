@@ -1,17 +1,140 @@
 {% extends 'base.html.twig' %}
+{% block title %}Nouvel approvisionnement{% endblock %}
+{% block breadcrumb %}Approvisionnements{% endblock %}
+{% block bouton %}
+    <a href="{{ path('app_approvisionnement_index') }}" class="btn btn-outline-secondary btn-sm">Retour</a>
+{% endblock %}
 
-{% block title %}Ajouter un nouvel approvisionnement{% endblock %}
-{%block bouton%}
-    <a class="btn btn-primary text-white" href="{{ path('app_approvisionnement_index') }}">Retour</a>
-{% endblock%}
-
-{% block breadcrumb %}
-    Approvisionnements
-{%endblock%}
 {% block body %}
-<div class="card mt-3">
-    <div class="card-body">
-        {{ include('approvisionnement/_form.html.twig') }}
+<form method="post" action="{{ path('app_approvisionnement_new') }}">
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Date d'approvisionnement</label>
+            <input type="datetime-local" name="dateAppro" class="form-control"
+                   value="{{ "now"|date("Y-m-d\\TH:i") }}" required>
+        </div>
     </div>
-</div>
+
+    <div class="table-responsive mb-3">
+        <table class="table align-middle">
+            <thead style="background:#f8f9fa;">
+                <tr>
+                    <th style="width:50%">Produit</th>
+                    <th style="width:20%">Quantité</th>
+                    <th style="width:25%">Coût estimé</th>
+                    <th style="width:5%"></th>
+                </tr>
+            </thead>
+            <tbody id="lignes-body">
+                <tr class="ligne-appro">
+                    <td>
+                        <select name="produits[]" class="form-select produit-select" required>
+                            <option value="">— Choisir un produit —</option>
+                            {% for produit in produits %}
+                                <option value="{{ produit.id }}" data-prix="{{ produit.prix }}">
+                                    {{ produit.nomProduit }} (stock : {{ produit.quantiteStock }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="quantites[]" class="form-control quantite-input" min="1" value="1" required>
+                    </td>
+                    <td><span class="cout-estime text-muted">—</span></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger supprimer-ligne">
+                            <i class="mdi mdi-delete"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between">
+        <button type="button" id="ajouter-ligne" class="btn btn-outline-primary btn-sm">
+            <i class="mdi mdi-plus"></i> Ajouter une ligne
+        </button>
+        <div>
+            <span class="me-3 text-muted" style="font-size:.9rem;">
+                Total estimé : <strong id="total-global">0 FCFA</strong>
+            </span>
+            <button type="submit" class="btn btn-primary">
+                <i class="mdi mdi-check me-1"></i> Enregistrer tout
+            </button>
+        </div>
+    </div>
+
+</form>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+(function () {
+    var optionsHTML = '';
+    {% for produit in produits %}
+    optionsHTML += '<option value="{{ produit.id }}" data-prix="{{ produit.prix }}">{{ produit.nomProduit|replace({"'": "\\'", '"': '\\"'}) }} (stock : {{ produit.quantiteStock }})</option>';
+    {% endfor %}
+
+    function bindLigne(tr) {
+        var sel  = tr.querySelector('.produit-select');
+        var qty  = tr.querySelector('.quantite-input');
+        var cout = tr.querySelector('.cout-estime');
+        var btn  = tr.querySelector('.supprimer-ligne');
+
+        function majCout() {
+            var opt   = sel.options[sel.selectedIndex];
+            var prix  = opt ? parseFloat(opt.getAttribute('data-prix') || 0) : 0;
+            var q     = parseInt(qty.value) || 0;
+            var total = prix * q;
+            cout.textContent = total > 0 ? total.toLocaleString('fr-FR') + ' FCFA' : '—';
+            calculerTotal();
+        }
+
+        sel.addEventListener('change', majCout);
+        qty.addEventListener('input', majCout);
+
+        btn.addEventListener('click', function () {
+            var body = document.getElementById('lignes-body');
+            if (body.querySelectorAll('.ligne-appro').length > 1) {
+                tr.remove();
+                calculerTotal();
+            }
+        });
+    }
+
+    function calculerTotal() {
+        var total = 0;
+        document.querySelectorAll('.ligne-appro').forEach(function (tr) {
+            var sel  = tr.querySelector('.produit-select');
+            var qty  = tr.querySelector('.quantite-input');
+            var opt  = sel ? sel.options[sel.selectedIndex] : null;
+            var prix = opt ? parseFloat(opt.getAttribute('data-prix') || 0) : 0;
+            var q    = parseInt(qty ? qty.value : 0) || 0;
+            total   += prix * q;
+        });
+        document.getElementById('total-global').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    function nouvelleLigne() {
+        var tr = document.createElement('tr');
+        tr.className = 'ligne-appro';
+        tr.innerHTML =
+            '<td><select name="produits[]" class="form-select produit-select" required>' +
+            '<option value="">— Choisir un produit —</option>' +
+            optionsHTML +
+            '</select></td>' +
+            '<td><input type="number" name="quantites[]" class="form-control quantite-input" min="1" value="1" required></td>' +
+            '<td><span class="cout-estime text-muted">—</span></td>' +
+            '<td><button type="button" class="btn btn-sm btn-outline-danger supprimer-ligne"><i class="mdi mdi-delete"></i></button></td>';
+        document.getElementById('lignes-body').appendChild(tr);
+        bindLigne(tr);
+        calculerTotal();
+    }
+
+    document.querySelectorAll('.ligne-appro').forEach(bindLigne);
+    document.getElementById('ajouter-ligne').addEventListener('click', nouvelleLigne);
+})();
+</script>
 {% endblock %}
