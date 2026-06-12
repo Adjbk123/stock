@@ -70,12 +70,54 @@
 {% endblock %}
 
 {% block javascripts %}
+
+{# Modal de confirmation suppression ligne #}
+<div id="modal-confirm" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:12px;padding:28px 32px;max-width:380px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.18);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="mdi mdi-alert-outline" style="font-size:1.4rem;color:#dc3545;"></i>
+            </div>
+            <div>
+                <div style="font-weight:600;font-size:1rem;">Supprimer la ligne ?</div>
+                <div style="font-size:.85rem;color:#6c757d;margin-top:2px;">Cette action est irréversible.</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+            <button id="modal-annuler" class="btn btn-outline-secondary btn-sm px-4">Annuler</button>
+            <button id="modal-confirmer" class="btn btn-danger btn-sm px-4">Supprimer</button>
+        </div>
+    </div>
+</div>
+
 <script>
 (function () {
     var optionsHTML = '';
     {% for produit in produits %}
     optionsHTML += '<option value="{{ produit.id }}" data-prix="{{ produit.prix }}">{{ produit.nomProduit|replace({"'": "\\'", '"': '\\"'}) }} (stock : {{ produit.quantiteStock }})</option>';
     {% endfor %}
+
+    var modal       = document.getElementById('modal-confirm');
+    var ligneASuppr = null;
+
+    document.getElementById('modal-annuler').addEventListener('click', function () {
+        modal.style.display = 'none';
+        ligneASuppr = null;
+    });
+
+    document.getElementById('modal-confirmer').addEventListener('click', function () {
+        if (ligneASuppr) {
+            ligneASuppr.remove();
+            calculerTotal();
+            ligneASuppr = null;
+        }
+        modal.style.display = 'none';
+    });
+
+    function ouvrirModal(tr) {
+        ligneASuppr = tr;
+        modal.style.display = 'flex';
+    }
 
     function bindLigne(tr) {
         var sel  = tr.querySelector('.produit-select');
@@ -98,8 +140,7 @@
         btn.addEventListener('click', function () {
             var body = document.getElementById('lignes-body');
             if (body.querySelectorAll('.ligne-appro').length > 1) {
-                tr.remove();
-                calculerTotal();
+                ouvrirModal(tr);
             }
         });
     }
