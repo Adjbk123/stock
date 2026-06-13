@@ -337,9 +337,38 @@
 
   <hr class="sidebar-divider mt-3">
 
-  <a href="{{ path('app_logout') }}" class="sidebar-link" style="color:#dc3545;">
+  <a href="#" class="sidebar-link" style="color:#dc3545;" id="btn-logout">
     <i class="mdi mdi-power" style="color:#dc3545;"></i> Déconnexion
   </a>
+
+  {# Modal confirmation déconnexion #}
+  <div id="modal-logout" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:12px;padding:28px 32px;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.18);">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#fff0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="mdi mdi-power" style="font-size:1.5rem;color:#dc3545;"></i>
+        </div>
+        <div>
+          <div style="font-weight:600;font-size:1rem;">Déconnexion</div>
+          <div style="font-size:.85rem;color:#6c757d;margin-top:2px;">Voulez-vous vraiment vous déconnecter ?</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+        <button id="modal-logout-annuler" class="btn btn-outline-secondary btn-sm px-4">Annuler</button>
+        <a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm px-4">Se déconnecter</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('btn-logout').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('modal-logout').style.display = 'flex';
+    });
+    document.getElementById('modal-logout-annuler').addEventListener('click', function() {
+      document.getElementById('modal-logout').style.display = 'none';
+    });
+  </script>
 
 </nav>
 
