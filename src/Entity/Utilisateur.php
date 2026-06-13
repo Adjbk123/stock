@@ -38,6 +38,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $adresse = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private bool $actif = true;
+
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Vente::class)]
     private Collection $ventes;
 
@@ -181,6 +184,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function isActif(): bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): self
+    {
+        $this->actif = $actif;
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->nom.' '.$this->prenom;

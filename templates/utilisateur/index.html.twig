@@ -3,48 +3,77 @@
 {% block title %}Liste des utilisateurs{% endblock %}
 {% block breadcrumb %}Utilisateurs{% endblock %}
 {% block bouton %}
-
-    <a href="{{ path('app_inscription') }}" class="btn btn-primary text-white"> Ajout d'un compte</a>
+    <a href="{{ path('app_inscription') }}" class="btn btn-primary btn-sm">
+        <i class="mdi mdi-account-plus me-1"></i> Ajouter un compte
+    </a>
 {% endblock %}
 
 {% block body %}
-    <div class="table-responsive">
-        <table class="table table-hover" id="myTable">
-            <thead>
+<div class="table-responsive">
+    <table class="table table-hover align-middle" id="myTable">
+        <thead style="background:#f8f9fa;">
             <tr>
-                <th>#</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Adresse</th>
-                <th>Username</th>
-                <th>Actions</th>
+                <th style="font-size:.78rem;">#</th>
+                <th style="font-size:.78rem;">Nom complet</th>
+                <th style="font-size:.78rem;">Username</th>
+                <th style="font-size:.78rem;">Adresse</th>
+                <th style="font-size:.78rem;">Statut</th>
+                <th style="font-size:.78rem;">Actions</th>
             </tr>
-            </thead>
-            <tbody>
-            {% for utilisateur in utilisateurs %}
-                <tr>
-                    <td>{{ utilisateur.id }}</td>
-                    <td>{{ utilisateur.username }}</td>
-                    <td>{{ utilisateur.nom }}</td>
-                    <td>{{ utilisateur.prenom }}</td>
-                    <td>{{ utilisateur.adresse }}</td>
-                    <td>
-                        <a class="btn btn-success p-2" href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">Voir</a>
-                        <a class="btn btn-primary p-2" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
-                        <form method="post" action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?');">
+        </thead>
+        <tbody>
+        {% for utilisateur in utilisateurs %}
+            <tr {% if not utilisateur.actif %}style="opacity:.55;"{% endif %}>
+                <td>{{ utilisateur.id }}</td>
+                <td class="fw-medium">{{ utilisateur.nom }} {{ utilisateur.prenom }}</td>
+                <td>{{ utilisateur.username }}</td>
+                <td>{{ utilisateur.adresse }}</td>
+                <td>
+                    {% if utilisateur.actif %}
+                        <span class="badge" style="background:#eaf6ec;color:#2d9a4e;font-size:.75rem;">Actif</span>
+                    {% else %}
+                        <span class="badge" style="background:#fdecea;color:#c0392b;font-size:.75rem;">Désactivé</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">
+                        <i class="mdi mdi-pencil-outline"></i>
+                    </a>
+
+                    {# Activer / Désactiver #}
+                    <form method="post" action="{{ path('app_utilisateur_toggle', {'id': utilisateur.id}) }}" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ utilisateur.id) }}">
+                        {% if utilisateur.actif %}
+                            <button class="btn btn-sm btn-outline-warning" title="Désactiver le compte">
+                                <i class="mdi mdi-account-off-outline"></i>
+                            </button>
+                        {% else %}
+                            <button class="btn btn-sm btn-outline-success" title="Activer le compte">
+                                <i class="mdi mdi-account-check-outline"></i>
+                            </button>
+                        {% endif %}
+                    </form>
+
+                    {# Supprimer uniquement si aucune vente #}
+                    {% if utilisateur.ventes|length == 0 %}
+                        <form method="post" action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}" style="display:inline;"
+                              onsubmit="return confirm('Supprimer définitivement ce compte ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
-                            <button class="btn btn-danger p-2">Supprimer</button>
+                            <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                <i class="mdi mdi-delete-outline"></i>
+                            </button>
                         </form>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="8">no records found</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-
+                    {% else %}
+                        <button class="btn btn-sm btn-outline-secondary" disabled title="Impossible : cet utilisateur a des ventes enregistrées">
+                            <i class="mdi mdi-delete-off-outline"></i>
+                        </button>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" class="text-center text-muted py-4">Aucun utilisateur trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

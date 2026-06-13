@@ -71,6 +71,18 @@ class UtilisateurController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/toggle', name: 'app_utilisateur_toggle', methods: ['POST'])]
+    public function toggle(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
+    {
+        if ($this->isCsrfTokenValid('toggle'.$utilisateur->getId(), $request->request->get('_token'))) {
+            $utilisateur->setActif(!$utilisateur->isActif());
+            $utilisateurRepository->save($utilisateur, true);
+            $etat = $utilisateur->isActif() ? 'activé' : 'désactivé';
+            $this->addFlash('success', 'Compte ' . $etat . ' avec succès.');
+        }
+        return $this->redirectToRoute('app_utilisateur_index');
+    }
+
     #[Route('/{id}', name: 'app_utilisateur_delete', methods: ['POST'])]
     public function delete(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
     {
